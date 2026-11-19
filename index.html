@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nunito+Sans:wght@400;600;700&display=swap">
 <style>
 
+
 /* Layout: Lichterkette oben, großer Titel, zwei Reiter, Kartenraster mit Bild/Preis/Link */
 :root{
   --bg:#EDF3EF; --surface:#FFFFFF; --surface2:#F3F7F4; --ink:#12302A; --muted:#58706A; --line:#CBDAD2;
@@ -81,6 +82,36 @@ h3{font-family:var(--font-display);font-size:1.5rem;line-height:1.15;font-weight
 @media (prefers-reduced-motion:reduce){.bulb{animation:none}}
 
 .err{border:2px dashed var(--berry);border-radius:14px;padding:24px;color:var(--ink)}
+.btn2{display:inline-flex;align-items:center;gap:7px;font:inherit;font-weight:700;font-size:.92rem;border-radius:9px;padding:9px 14px;cursor:pointer;text-decoration:none;min-height:40px;background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn2:hover,.btn:hover{border-color:var(--gold)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.add{border:2px dashed var(--line);background:transparent;color:var(--muted);border-radius:14px;min-height:220px;display:grid;place-items:center;font:inherit;font-weight:700;cursor:pointer}
+.add:hover{border-color:var(--gold);color:var(--ink)}
+body.ed{padding-bottom:110px}
+.edbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--surface);border-top:1px solid var(--line);font-weight:700}
+.edbtn{display:flex;gap:8px;flex-wrap:wrap}
+.setup{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;max-width:640px;margin:24px auto;display:grid;gap:14px}
+.setup h2,dialog h2{font-family:var(--font-display);font-size:1.8rem;margin:0;font-weight:600}
+.setup p,.setup ol{margin:0}
+.setup ol{padding-left:20px;display:grid;gap:6px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:0;width:min(540px,calc(100vw - 32px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(5,15,12,.65)}
+dialog form{padding:20px;display:grid;gap:14px}
+label{display:grid;gap:5px;font-size:.85rem;font-weight:700;color:var(--muted)}
+input,textarea,select{font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:10px;width:100%;min-width:0}
+textarea{min-height:70px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk{display:flex;align-items:center;gap:10px;font-size:.95rem;color:var(--ink)}
+.chk input{width:20px;height:20px;accent-color:var(--pine)}
+.pv{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.pick{display:inline-flex;font-size:.9rem}
+.hide{position:absolute;width:1px;height:1px;opacity:0}
+.hint{font-size:.85rem;color:var(--muted)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+.acts div{display:flex;gap:10px;flex-wrap:wrap}
+.danger{color:var(--berry)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.92rem;z-index:60;max-width:calc(100vw - 32px)}
+@media (max-width:480px){.two{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -90,13 +121,27 @@ h3{font-family:var(--font-display);font-size:1.5rem;line-height:1.15;font-weight
 (function(){
 'use strict';
 var root=document.getElementById('root');
-var W=Array.isArray(window.WUENSCHE)?window.WUENSCHE:null;
+var BASE=Array.isArray(window.WUENSCHE)?window.WUENSCHE:null;
+var n=0;
+var items=BASE?BASE.filter(function(x){return x&&x.titel}).map(function(x){var c={};for(var k in x)c[k]=x[k];c._id='i'+(n++);return c}):null;
+var mode=location.hash==='#bearbeiten'?'edit':'view';
+var cfg={token:'',repo:'mhobi19/wunschliste'};
+try{var raw=localStorage.getItem('wl-gh');if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object'){cfg.token=o.token||'';cfg.repo=o.repo||cfg.repo}}}catch(e){}
+var dirty=false,busy=false,pend={},dlg=null,draftImg=null,toastEl=null,toastT=0;
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function eur(n){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n)}
+function eur(v){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(v)}
+function parseEUR(s){var t=String(s).replace(/[^\d,.\-]/g,'');if(!t)return null;if(t.indexOf(',')>-1)t=t.replace(/\./g,'').replace(',','.');var v=parseFloat(t);return isFinite(v)&&v>=0?Math.round(v*100)/100:null}
 function safeUrl(u){u=String(u||'').trim();if(!u)return '';try{var x=new URL(/^[a-z]+:\/\//i.test(u)?u:'https://'+u);return (x.protocol==='https:'||x.protocol==='http:')?x.href:''}catch(e){return ''}}
 function safeImg(u){u=String(u||'').trim();if(!u)return '';if(/^https?:\/\//i.test(u))return u;return /^[\w\-.\/ ]+$/.test(u)&&u.indexOf('..')<0?u:''}
 function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}}
+function today(){var d=new Date();return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()}
+function find(id){return items.filter(function(x){return x._id===id})[0]}
+function toast(m){
+  if(!toastEl){toastEl=document.createElement('div');toastEl.className='toast';toastEl.setAttribute('role','status');document.body.appendChild(toastEl)}
+  toastEl.textContent=m;toastEl.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){toastEl.hidden=true},6000);
+}
+
 var GIFT='<svg class="ph" viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="46" width="76" height="46" rx="4"/><rect x="16" y="32" width="88" height="16" rx="4"/><path d="M60 32v60"/><path d="M60 32C48 32 38 26 40 17c2-8 14-6 20 15"/><path d="M60 32C72 32 82 26 80 17c-2-8-14-6-20 15"/></svg>';
 var OUT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
 function heart(on){return '<svg class="h'+(on?' on':'')+'" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 5.6 3.2C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg>'}
@@ -112,11 +157,12 @@ function shell(){
   root.innerHTML='<div class="page"><div class="lights" aria-hidden="true">'+lights+'</div>'+
    '<header class="hero"><div class="eyebrow">Weihnachten '+now.getFullYear()+' · für Mama</div><h1>Max’ <em>Wunschliste</em></h1><div class="count">'+cd+'</div></header>'+
    '<main id="main"></main>'+
-   '<p class="foot">Preise ändern sich. „Stand“ zeigt, wann der Preis zuletzt geprüft wurde.</p></div>';
+   '<p class="foot">Preise ändern sich. „Stand“ zeigt, wann der Preis zuletzt geprüft wurde.</p></div><div id="edbar"></div>';
 }
 
 function card(it){
-  var img=safeImg(it.bild),pic=img?'<img src="'+esc(img)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':GIFT;
+  var pv=pend[it._id],img=pv?pv.preview:safeImg(it.bild);
+  var pic=img?'<img src="'+esc(img)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':GIFT;
   var tag='';
   if(it.beispiel)tag='<span class="tag">Beispiel</span>';
   else if(it.besorgt)tag='<span class="tag ok">Schon besorgt</span>';
@@ -126,40 +172,215 @@ function card(it){
   var u=safeUrl(it.link);
   var shop=(it.shop||u)?'<div class="shop">'+esc(it.shop||host(u))+'</div>':'';
   var link=u?'<a class="btn" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">Zum Shop'+OUT+'</a>':'';
-  return '<article class="card'+(it.besorgt?' done':'')+'"><div class="pic">'+pic+tag+hearts+'</div><div class="body"><h3>'+esc(it.titel)+'</h3>'+(it.notiz?'<p class="note">'+esc(it.notiz)+'</p>':'')+shop+p+'<div class="row">'+link+'</div></div></article>';
+  var ed=mode==='edit'?'<button type="button" class="btn2" data-act="edit" data-id="'+it._id+'">Ändern</button><button type="button" class="btn2" data-act="bought" data-id="'+it._id+'">'+(it.besorgt?'Nicht besorgt':'Besorgt')+'</button>':'';
+  return '<article class="card'+(it.besorgt?' done':'')+'"><div class="pic">'+pic+tag+hearts+'</div><div class="body"><h3>'+esc(it.titel)+'</h3>'+(it.notiz?'<p class="note">'+esc(it.notiz)+'</p>':'')+shop+p+'<div class="row">'+link+ed+'</div></div></article>';
+}
+
+function setup(m){
+  m.innerHTML='<div class="setup"><h2>Bearbeiten einrichten</h2><p>Das ist einmalig. Dein Schlüssel bleibt nur in diesem Browser.</p><ol>'+
+   '<li>Öffne GitHub, klicke oben rechts auf dein Profilbild, dann „Settings“.</li>'+
+   '<li>Ganz unten links: „Developer settings“, dann „Personal access tokens“, dann „Fine-grained tokens“, dann „Generate new token“.</li>'+
+   '<li>Name: wunschliste. Bei „Repository access“ wählst du „Only select repositories“ und dein Repository wunschliste.</li>'+
+   '<li>Bei „Permissions“ öffnest du „Repository permissions“ und stellst „Contents“ auf „Read and write“.</li>'+
+   '<li>Unten „Generate token“. Den Token (beginnt mit github_pat_) kopieren und hier einfügen.</li></ol>'+
+   '<label for="s-token">Token<input id="s-token" type="password" autocomplete="off" placeholder="github_pat_…"></label>'+
+   '<label for="s-repo">Repository<input id="s-repo" type="text" autocapitalize="off" spellcheck="false" value="'+esc(cfg.repo)+'"></label>'+
+   '<div class="row"><button type="button" class="btn" data-act="connect">Verbinden</button><a class="btn2" href="#">Abbrechen</a></div></div>';
 }
 
 function main(){
   var m=document.getElementById('main');
-  if(!W){m.innerHTML='<div class="err"><b>Die Liste lässt sich nicht laden.</b><br>In der Datei wuensche.js fehlt vermutlich ein Komma, eine Klammer oder ein Anführungszeichen.</div>';return}
-  var list=W.filter(function(i){return i&&i.titel}).sort(function(a,b){return (a.besorgt?1:0)-(b.besorgt?1:0)||(Number(b.herz)||1)-(Number(a.herz)||1)});
+  document.body.classList.toggle('ed',mode==='edit'&&!!cfg.token);
+  if(!items){m.innerHTML='<div class="err"><b>Die Liste lässt sich nicht laden.</b><br>In der Datei wuensche.js fehlt vermutlich ein Komma, eine Klammer oder ein Anführungszeichen.</div>';return}
+  if(mode==='edit'&&!cfg.token){setup(m);return}
+  var list=items.slice().sort(function(a,b){return (a.besorgt?1:0)-(b.besorgt?1:0)||(Number(b.herz)||1)-(Number(a.herz)||1)});
   var done=0,open=0;
   list.forEach(function(i){if(i.besorgt)done++;else if(typeof i.preis==='number')open+=i.preis});
   var stats='<span><b>'+list.length+'</b>Wünsche</span><span><b>'+done+'</b>besorgt</span><span><b>'+eur(open)+'</b>noch offen</span>';
-  m.innerHTML='<div class="intro"><p>Das wünsche ich mir zu Weihnachten. Die Herzen zeigen, wie sehr.</p><div class="stats">'+stats+'</div></div><div class="grid">'+(list.map(card).join('')||'<div class="empty">Noch nichts auf der Liste.</div>')+'</div>';
+  var cards=list.map(card).join('');
+  if(mode==='edit')cards+='<button type="button" class="add" data-act="add">+ Neuer Wunsch</button>';
+  if(!cards)cards='<div class="empty">Noch nichts auf der Liste.</div>';
+  var intro=mode==='edit'?'Bearbeitungsmodus. Mama sieht Änderungen erst nach „Veröffentlichen“.':'Das wünsche ich mir zu Weihnachten. Die Herzen zeigen, wie sehr.';
+  m.innerHTML='<div class="intro"><p>'+intro+'</p><div class="stats">'+stats+'</div></div><div class="grid">'+cards+'</div>';
 }
 
+function edbar(){
+  var b=document.getElementById('edbar');
+  if(mode!=='edit'||!cfg.token){b.innerHTML='';return}
+  b.innerHTML='<div class="edbar"><span>'+(busy?'Wird veröffentlicht …':dirty?'Nicht veröffentlichte Änderungen':'Alles veröffentlicht')+'</span><span class="edbtn"><button type="button" class="btn" data-act="publish"'+(dirty&&!busy?'':' disabled')+'>Veröffentlichen</button><a class="btn2" href="#">Fertig</a><button type="button" class="btn2" data-act="logout">Abmelden</button></span></div>';
+}
+function render(){main();edbar()}
+
+/* ---------- GitHub ---------- */
+function errText(s){
+  if(s===401)return 'Der Token ist ungültig oder abgelaufen.';
+  if(s===403)return 'Der Token hat keine Berechtigung. Nötig: Contents auf „Read and write“.';
+  if(s===404)return 'Repository oder wuensche.js nicht gefunden, oder der Token hat keinen Zugriff auf dieses Repository.';
+  if(s===409||s===422)return 'Die Datei wurde zwischendurch geändert. Bitte Seite neu laden und nochmal versuchen.';
+  return 'GitHub meldet einen Fehler ('+s+').';
+}
+function gh(path,opt){
+  opt=opt||{};
+  return fetch('https://api.github.com/repos/'+cfg.repo+'/contents/'+path,{method:opt.method||'GET',body:opt.body,cache:'no-store',headers:{'Authorization':'Bearer '+cfg.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
+}
+function txtB64(s){var b=new TextEncoder().encode(s),r='';for(var i=0;i<b.length;i+=8192)r+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return btoa(r)}
+function blobB64(b){return new Promise(function(res,rej){var f=new FileReader();f.onload=function(){res(String(f.result).split(',')[1])};f.onerror=function(){rej(new Error('read'))};f.readAsDataURL(b)})}
+function serialize(){
+  var out=items.map(function(it){
+    var o={titel:it.titel,preis:typeof it.preis==='number'?it.preis:null,stand:it.stand||'',shop:it.shop||'',link:it.link||'',bild:it.bild||'',notiz:it.notiz||'',herz:Number(it.herz)||1,besorgt:!!it.besorgt};
+    if(it.beispiel)o.beispiel=true;
+    return o;
+  });
+  return '// Diese Datei schreibt die Seite beim Veröffentlichen selbst.\n// Du kannst sie auch hier bei GitHub von Hand ändern.\nwindow.WUENSCHE = '+JSON.stringify(out,null,2)+';\n';
+}
+
+async function connect(){
+  var t=document.getElementById('s-token').value.trim();
+  var r=document.getElementById('s-repo').value.trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\/+$/,'');
+  if(!t||!/^[\w.\-]+\/[\w.\-]+$/.test(r)){toast('Bitte Token und Repository eintragen. Das Repository sieht so aus: name/wunschliste');return}
+  var old=cfg;cfg={token:t,repo:r};
+  try{
+    var res=await gh('wuensche.js');
+    if(!res.ok){cfg=old;toast(errText(res.status));return}
+  }catch(e){cfg=old;toast('Keine Verbindung zu GitHub.');return}
+  try{localStorage.setItem('wl-gh',JSON.stringify(cfg))}catch(e){}
+  toast('Verbunden. Du kannst jetzt bearbeiten.');
+  render();
+}
+
+async function publish(){
+  if(busy||!dirty)return;
+  busy=true;edbar();
+  try{
+    for(var id in pend){
+      var it=find(id),pv=pend[id];
+      if(!it||it.bild!==pv.path||pv.done)continue;
+      var r1=await gh(pv.path,{method:'PUT',body:JSON.stringify({message:'Bild hinzugefügt',content:await blobB64(pv.blob)})});
+      if(!r1.ok)throw {status:r1.status};
+      pv.done=true;
+    }
+    var g=await gh('wuensche.js');
+    if(!g.ok)throw {status:g.status};
+    var gj=await g.json();
+    var r2=await gh('wuensche.js',{method:'PUT',body:JSON.stringify({message:'Wunschliste aktualisiert',content:txtB64(serialize()),sha:gj.sha})});
+    if(!r2.ok)throw {status:r2.status};
+    dirty=false;
+    toast('Veröffentlicht. Bei Mama ist es in etwa 1 bis 2 Minuten sichtbar. Dort die Seite neu laden.');
+  }catch(e){
+    toast(e&&e.status?errText(e.status):'Veröffentlichen hat nicht geklappt. Bitte die Internetverbindung prüfen.');
+  }
+  busy=false;render();
+}
+
+/* ---------- Bearbeiten ---------- */
+function shrink(file){
+  return new Promise(function(res,rej){
+    var im=new Image(),u=URL.createObjectURL(file);
+    im.onload=function(){
+      var s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);
+      c.toBlob(function(b){b?res(b):rej(new Error('blob'))},'image/jpeg',.85);
+    };
+    im.onerror=function(){rej(new Error('img'))};im.src=u;
+  });
+}
+function slug(s){return String(s).toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,30)||'bild'}
+
+function openDlg(id){
+  var it=id?find(id):null;
+  it=it||{_id:'',titel:'',preis:null,shop:'',link:'',bild:'',notiz:'',herz:2,besorgt:false};
+  draftImg=null;
+  if(!dlg){dlg=document.createElement('dialog');document.body.appendChild(dlg)}
+  var o=function(v){return '<option value="'+v+'"'+((Number(it.herz)||2)===v?' selected':'')+'>'};
+  var hasPend=it._id&&pend[it._id];
+  dlg.innerHTML='<form method="dialog"><h2>'+(id?'Wunsch ändern':'Neuer Wunsch')+'</h2>'+
+   '<label for="f-t">Titel<input id="f-t" name="t" maxlength="120" value="'+esc(it.titel)+'"></label>'+
+   '<div class="two"><label for="f-p">Preis in Euro<input id="f-p" name="p" inputmode="decimal" placeholder="49,90" value="'+(typeof it.preis==='number'?esc(String(it.preis).replace('.',',')):'')+'"></label>'+
+   '<label for="f-shop">Shop<input id="f-shop" name="shop" maxlength="60" value="'+esc(it.shop)+'"></label></div>'+
+   '<label for="f-url">Link zum Produkt<input id="f-url" name="url" type="text" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://" value="'+esc(it.link)+'"></label>'+
+   '<label for="f-n">Notiz<textarea id="f-n" name="n" maxlength="300">'+esc(it.notiz)+'</textarea></label>'+
+   '<label for="f-w">Wie wichtig?<select id="f-w" name="w">'+o(1)+'Wäre schön</option>'+o(2)+'Sehr gern</option>'+o(3)+'Herzenswunsch</option></select></label>'+
+   '<label for="f-img">Bild-Adresse (optional)<input id="f-img" name="img" type="text" autocapitalize="off" spellcheck="false" placeholder="https://… (Rechtsklick auf das Bild im Shop, Bildadresse kopieren)" value="'+(hasPend?'':esc(it.bild))+'"></label>'+
+   '<div class="pv"><label class="btn2 pick" for="f-file">Oder Bild vom Mac wählen</label><input id="f-file" type="file" accept="image/*" class="hide"><span id="pvt" class="hint">'+(hasPend?'Gewähltes Bild ist vorgemerkt.':'')+'</span></div>'+
+   '<label class="chk" for="f-b"><input id="f-b" name="b" type="checkbox"'+(it.besorgt?' checked':'')+'>Schon besorgt</label>'+
+   '<div class="acts"><div>'+(id?'<button type="button" class="btn2 danger" id="del">Löschen</button>':'')+'</div><div><button type="button" class="btn2" id="cancel">Abbrechen</button><button type="submit" class="btn">Übernehmen</button></div></div></form>';
+  var f=dlg.querySelector('form');
+  f.addEventListener('submit',function(e){e.preventDefault();save(id)});
+  dlg.querySelector('#cancel').addEventListener('click',function(){dlg.close()});
+  dlg.querySelector('#f-file').addEventListener('change',async function(e){
+    var file=e.target.files&&e.target.files[0];if(!file)return;
+    var t=dlg.querySelector('#pvt');t.textContent='Bild wird vorbereitet …';
+    try{var b=await shrink(file);draftImg={blob:b,preview:URL.createObjectURL(b)};t.textContent='Bild ist vorgemerkt.';dlg.querySelector('#f-img').value=''}
+    catch(x){t.textContent='Das Bild konnte nicht gelesen werden.'}
+  });
+  var del=dlg.querySelector('#del');
+  if(del)del.addEventListener('click',function(){
+    if(del.dataset.s!=='1'){del.dataset.s='1';del.textContent='Wirklich löschen?';return}
+    items=items.filter(function(x){return x._id!==id});delete pend[id];dirty=true;dlg.close();render();
+  });
+  dlg.showModal();
+}
+
+function save(id){
+  var E=dlg.querySelector('form').elements;
+  var t=E.t.value.trim();if(!t){E.t.focus();toast('Der Titel fehlt.');return}
+  var pr=E.p.value.trim(),p=pr?parseEUR(pr):null;
+  if(pr&&p===null){E.p.focus();toast('Preis nicht lesbar. Beispiel: 49,90');return}
+  var ur=E.url.value.trim(),url=safeUrl(ur);
+  if(ur&&!url){E.url.focus();toast('Der Link ist nicht lesbar.');return}
+  var im=E.img.value.trim();
+  if(im&&!safeImg(im)){E.img.focus();toast('Die Bild-Adresse ist nicht lesbar.');return}
+  var it=id?find(id):null;
+  if(!it){it={_id:'i'+(n++)};items.push(it)}
+  var old=it.preis;
+  it.titel=t;it.preis=p;it.shop=E.shop.value.trim();it.link=url;it.notiz=E.n.value.trim();it.herz=+E.w.value;it.besorgt=E.b.checked;delete it.beispiel;
+  if(p===null)it.stand='';else if(p!==old||!it.stand)it.stand=today();
+  if(draftImg){
+    var path='bilder/'+slug(t)+'-'+Date.now().toString(36)+'.jpg';
+    pend[it._id]={blob:draftImg.blob,preview:draftImg.preview,path:path,done:false};it.bild=path;
+  }else if(im){delete pend[it._id];it.bild=im}
+  else if(!pend[it._id])it.bild='';
+  dirty=true;dlg.close();render();
+}
+
+root.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el||el.disabled)return;
+  var a=el.dataset.act,id=el.dataset.id;
+  if(a==='add')openDlg('');
+  else if(a==='edit')openDlg(id);
+  else if(a==='bought'){var it=find(id);if(it){it.besorgt=!it.besorgt;dirty=true;render()}}
+  else if(a==='connect')connect();
+  else if(a==='publish')publish();
+  else if(a==='logout'){cfg.token='';try{localStorage.removeItem('wl-gh')}catch(x){}toast('Abgemeldet. Der Token ist aus diesem Browser gelöscht.');render()}
+});
 root.addEventListener('error',function(e){
   if(e.target&&e.target.tagName==='IMG'){var p=document.createElement('div');p.innerHTML=GIFT;e.target.replaceWith(p.firstChild)}
 },true);
+addEventListener('hashchange',function(){
+  var m=location.hash==='#bearbeiten'?'edit':'view';
+  if(mode==='edit'&&m==='view'&&dirty&&!confirm('Es gibt nicht veröffentlichte Änderungen. Trotzdem verlassen?')){location.hash='#bearbeiten';return}
+  mode=m;render();
+});
+addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue=''}});
 
 function snow(){
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var c=document.createElement('canvas');c.className='snow';c.setAttribute('aria-hidden','true');
   document.body.insertBefore(c,document.body.firstChild);
-  var g=c.getContext('2d'),Wd=0,H=0,fl=[],col='rgba(255,255,255,.8)',n=0;
-  function size(){Wd=c.width=innerWidth;H=c.height=innerHeight;var k=Math.min(90,Math.round(Wd/14));fl=[];for(var i=0;i<k;i++)fl.push({x:Math.random()*Wd,y:Math.random()*H,r:1+Math.random()*2.6,v:.3+Math.random()*.9,s:Math.random()*6.28})}
+  var g=c.getContext('2d'),Wd=0,H=0,fl=[],col='rgba(255,255,255,.8)',k=0;
+  function size(){Wd=c.width=innerWidth;H=c.height=innerHeight;var q=Math.min(90,Math.round(Wd/14));fl=[];for(var i=0;i<q;i++)fl.push({x:Math.random()*Wd,y:Math.random()*H,r:1+Math.random()*2.6,v:.3+Math.random()*.9,s:Math.random()*6.28})}
   size();addEventListener('resize',size);
   (function tick(){
     if(!document.hidden){
-      if(n++%120===0)col=getComputedStyle(document.documentElement).getPropertyValue('--snow')||col;
+      if(k++%120===0)col=getComputedStyle(document.documentElement).getPropertyValue('--snow')||col;
       g.clearRect(0,0,Wd,H);g.fillStyle=col;
       for(var i=0;i<fl.length;i++){var f=fl[i];f.y+=f.v;f.s+=.01;f.x+=Math.sin(f.s)*.4;if(f.y>H+4){f.y=-4;f.x=Math.random()*Wd}g.beginPath();g.arc(f.x,f.y,f.r,0,6.283);g.fill()}
     }
     requestAnimationFrame(tick);
   })();
 }
-shell();main();snow();
+shell();render();snow();
 })();
 </script>
 </body>
