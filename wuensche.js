@@ -1,53 +1,26 @@
-// Hier steht deine Wunschliste. Jeder Wunsch ist ein Block zwischen { und }.
-// Nach jedem Block steht ein Komma (nach dem letzten ist es egal).
-// Texte stehen in Anführungszeichen "...". Preise ohne Anführungszeichen und mit Punkt: 49.90
-//
-// titel    = Name des Wunsches
-// preis    = Preis in Euro, z. B. 49.90 (oder null, wenn unbekannt)
-// stand    = Datum, an dem du den Preis geprüft hast
-// shop     = Name des Shops
-// link     = Adresse der Produktseite
-// bild     = Bildadresse (Rechtsklick auf das Bild im Shop, "Bildadresse kopieren") oder ein Dateiname wie "bilder/jacke.jpg"
-// notiz    = kurzer Text dazu
-// herz     = 1, 2 oder 3 (wie wichtig der Wunsch ist)
-// besorgt  = true, wenn schon geschenkt, sonst false
-// beispiel = true nur bei Beispielen. Beim Ersetzen die Zeile löschen.
-
+// Diese Datei schreibt die Seite beim Veröffentlichen selbst.
+// Du kannst sie auch hier bei GitHub von Hand ändern.
 window.WUENSCHE = [
   {
-    titel: "Bluetooth-Kopfhörer",
-    preis: 79.90,
-    stand: "20.11.2026",
-    shop: "Beispiel-Shop",
-    link: "",
-    bild: "",
-    notiz: "Mit Geräuschunterdrückung, gern in Schwarz.",
-    herz: 3,
-    besorgt: false,
-    beispiel: true
+    "titel": "Sport 7\" Shorts",
+    "preis": 24.5,
+    "stand": "20.11.2026",
+    "shop": "",
+    "link": "https://de.gymshark.com/products/gymshark-sport-7-shorts-black-ss25",
+    "bild": "https://cdn.shopify.com/s/files/1/1693/6215/files/images-Sport7ShortGSBlackGSBlackA1B3L_BCBF_0154_3840x.jpg?v=1746820255",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   },
   {
-    titel: "Stirnlampe",
-    preis: 29.90,
-    stand: "20.11.2026",
-    shop: "Beispiel-Shop",
-    link: "",
-    bild: "",
-    notiz: "Aufladbar, für Nachtschichten und zum Wandern.",
-    herz: 2,
-    besorgt: false,
-    beispiel: true
-  },
-  {
-    titel: "Warme Winterjacke",
-    preis: 119.00,
-    stand: "20.11.2026",
-    shop: "Beispiel-Shop",
-    link: "",
-    bild: "",
-    notiz: "Größe frage ich vorher nach.",
-    herz: 1,
-    besorgt: false,
-    beispiel: true
+    "titel": "Jeans Flare Fit",
+    "preis": 49.95,
+    "stand": "20.11.2026",
+    "shop": "",
+    "link": "https://www.zara.com/de/de/flare-fit-jeans-p01300301.html?v1=576289762&v2=2432121",
+    "bild": "https://static.zara.net/assets/public/fd8d/a999/98724336a487/ab300713f169/01300301445-p/01300301445-p.jpg?ts=1790242669076&w=1500",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
