@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Max’ Wunschliste</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+
+/* Layout: Lichterkette oben, großer Titel, zwei Reiter, Kartenraster mit Bild/Preis/Link */
+:root{
+  --bg:#EDF3EF; --surface:#FFFFFF; --surface2:#F3F7F4; --ink:#12302A; --muted:#58706A; --line:#CBDAD2;
+  color-scheme:light;
+  --gold:#8F6C0E; --berry:#A32630; --pine:#17493A; --on-pine:#F6F1E3;
+  --snow:rgba(90,140,125,.55); --glow:rgba(201,162,39,.16); --wire:#4B6B5F;
+  --b1:#D8404B; --b2:#E3B232; --b3:#3F9B72; --b4:#4F8FD8;
+  --font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --font-body:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B1E18; --surface:#11302A; --surface2:#0E2822; --ink:#F0EADB; --muted:#A5BBB1; --line:#23463C;
+  --gold:#E2BA50; --berry:#E5636D; --pine:#1E5A47; --on-pine:#F6F1E3;
+  --snow:rgba(255,255,255,.8); --glow:rgba(226,186,80,.14); --wire:#5E8576;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1E18; --surface:#11302A; --surface2:#0E2822; --ink:#F0EADB; --muted:#A5BBB1; --line:#23463C;
+  --gold:#E2BA50; --berry:#E5636D; --pine:#1E5A47; --on-pine:#F6F1E3;
+  --snow:rgba(255,255,255,.8); --glow:rgba(226,186,80,.14); --wire:#5E8576;
+  color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 48px}
+*{box-sizing:border-box}
+.snow{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1;max-width:1080px;margin:0 auto}
+.lights{display:flex;justify-content:space-between;height:34px;overflow:hidden;position:relative;padding:0 6px}
+.lights::before{content:"";position:absolute;left:0;right:0;top:6px;height:2px;background:var(--wire);border-radius:2px}
+.bulb{width:10px;height:15px;margin-top:8px;border-radius:50% 50% 45% 45%;background:var(--c);box-shadow:0 0 10px 2px var(--c);
+  animation:tw 2.8s ease-in-out infinite;animation-delay:calc(var(--i)*-.37s)}
+@keyframes tw{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{padding:28px 0 20px;text-align:center;background:radial-gradient(60% 100% at 50% 0%,var(--glow),transparent 70%)}
+.eyebrow{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--font-display);font-weight:500;font-size:clamp(2.6rem,9vw,4.6rem);line-height:1;margin:.25em 0 .2em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--gold);font-weight:600}
+.count{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.9rem;color:var(--muted)}
+.count b{color:var(--gold);font-variant-numeric:tabular-nums}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:flex-end;border-bottom:1px solid var(--line);margin-top:8px;padding-bottom:8px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs a{padding:12px 16px;text-decoration:none;color:var(--muted);font-weight:700;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs a[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold)}
+.tabs a:hover{color:var(--ink)}
+.intro{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline;justify-content:space-between;margin:22px 0 18px}
+.intro p{margin:0;color:var(--muted);max-width:52ch;min-width:0}
+.stats{display:flex;flex-wrap:wrap;gap:6px 22px;font-variant-numeric:tabular-nums}
+.stats span{color:var(--muted);font-size:.9rem}
+.stats b{font-family:var(--font-display);font-size:1.7rem;font-weight:600;color:var(--ink);margin-right:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,255px),1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.done .pic img,.card.done .ph{opacity:.45}
+.pic{position:relative;aspect-ratio:4/3;max-width:100%;background:linear-gradient(145deg,var(--pine),var(--surface2));display:grid;place-items:center;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{width:46%;color:var(--gold)}
+.tag{position:absolute;top:10px;left:10px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.tag.ok{background:var(--pine);color:var(--on-pine);border-color:var(--pine)}
+.hearts{position:absolute;top:10px;right:10px;display:flex;gap:2px;background:var(--surface);border-radius:999px;padding:4px 8px}
+.h{width:14px;height:14px;fill:none;stroke:var(--berry);stroke-width:1.8}
+.h.on{fill:var(--berry)}
+.body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+h3{font-family:var(--font-display);font-size:1.5rem;line-height:1.15;font-weight:600;margin:0;overflow-wrap:anywhere}
+.note{margin:0;color:var(--muted);font-size:.93rem;overflow-wrap:anywhere}
+.price{font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
+.stand{font-size:.78rem;color:var(--muted);margin-left:8px;font-variant-numeric:tabular-nums}
+.shop{font-size:.85rem;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.btn{display:inline-flex;align-items:center;gap:7px;font:inherit;font-weight:700;font-size:.92rem;border-radius:9px;padding:9px 14px;cursor:pointer;text-decoration:none;min-height:40px}
+.btn{background:var(--pine);color:var(--on-pine);border:1px solid var(--pine)}
+.btn svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.empty{border:2px dashed var(--line);border-radius:14px;padding:40px 20px;text-align:center;color:var(--muted)}
+.foot{margin-top:36px;text-align:center;font-size:.82rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.bulb{animation:none}}
+
+.err{border:2px dashed var(--berry);border-radius:14px;padding:24px;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="wuensche.js"></script>
+<script>
+(function(){
+'use strict';
+var root=document.getElementById('root');
+var W=Array.isArray(window.WUENSCHE)?window.WUENSCHE:null;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function eur(n){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n)}
+function safeUrl(u){u=String(u||'').trim();if(!u)return '';try{var x=new URL(/^[a-z]+:\/\//i.test(u)?u:'https://'+u);return (x.protocol==='https:'||x.protocol==='http:')?x.href:''}catch(e){return ''}}
+function safeImg(u){u=String(u||'').trim();if(!u)return '';if(/^https?:\/\//i.test(u))return u;return /^[\w\-.\/ ]+$/.test(u)&&u.indexOf('..')<0?u:''}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}}
+var GIFT='<svg class="ph" viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="22" y="46" width="76" height="46" rx="4"/><rect x="16" y="32" width="88" height="16" rx="4"/><path d="M60 32v60"/><path d="M60 32C48 32 38 26 40 17c2-8 14-6 20 15"/><path d="M60 32C72 32 82 26 80 17c-2-8-14-6-20 15"/></svg>';
+var OUT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+function heart(on){return '<svg class="h'+(on?' on':'')+'" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 5.6 3.2C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"/></svg>'}
+
+function shell(){
+  var lights='',cols=['--b1','--b2','--b3','--b4'];
+  for(var i=0;i<28;i++)lights+='<span class="bulb" style="--c:var('+cols[i%4]+');--i:'+i+'"></span>';
+  var now=new Date(),y=now.getFullYear(),t=new Date(y,11,24,18,0,0),days=Math.ceil((t-now)/864e5),cd;
+  if(days>1)cd='Noch <b>'+days+'</b> Tage bis Heiligabend';
+  else if(days===1)cd='Noch <b>1</b> Tag bis Heiligabend';
+  else if(now.getMonth()===11&&now.getDate()<=26)cd='<b>Frohe Weihnachten!</b>';
+  else{y++;cd='Bis Heiligabend '+y+': <b>'+Math.ceil((new Date(y,11,24,18)-now)/864e5)+'</b> Tage'}
+  root.innerHTML='<div class="page"><div class="lights" aria-hidden="true">'+lights+'</div>'+
+   '<header class="hero"><div class="eyebrow">Weihnachten '+now.getFullYear()+' · für Mama</div><h1>Max’ <em>Wunschliste</em></h1><div class="count">'+cd+'</div></header>'+
+   '<main id="main"></main>'+
+   '<p class="foot">Preise ändern sich. „Stand“ zeigt, wann der Preis zuletzt geprüft wurde.</p></div>';
+}
+
+function card(it){
+  var img=safeImg(it.bild),pic=img?'<img src="'+esc(img)+'" alt="" loading="lazy" referrerpolicy="no-referrer">':GIFT;
+  var tag='';
+  if(it.beispiel)tag='<span class="tag">Beispiel</span>';
+  else if(it.besorgt)tag='<span class="tag ok">Schon besorgt</span>';
+  var h=Math.max(1,Math.min(3,Math.round(Number(it.herz)||1)));
+  var hearts='<div class="hearts" role="img" aria-label="Wunschstärke '+h+' von 3">'+heart(h>=1)+heart(h>=2)+heart(h>=3)+'</div>';
+  var p=(typeof it.preis==='number'&&isFinite(it.preis))?'<div><span class="price">'+eur(it.preis)+'</span>'+((it.stand&&!it.beispiel)?'<span class="stand">Stand '+esc(it.stand)+'</span>':'')+'</div>':'';
+  var u=safeUrl(it.link);
+  var shop=(it.shop||u)?'<div class="shop">'+esc(it.shop||host(u))+'</div>':'';
+  var link=u?'<a class="btn" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">Zum Shop'+OUT+'</a>':'';
+  return '<article class="card'+(it.besorgt?' done':'')+'"><div class="pic">'+pic+tag+hearts+'</div><div class="body"><h3>'+esc(it.titel)+'</h3>'+(it.notiz?'<p class="note">'+esc(it.notiz)+'</p>':'')+shop+p+'<div class="row">'+link+'</div></div></article>';
+}
+
+function main(){
+  var m=document.getElementById('main');
+  if(!W){m.innerHTML='<div class="err"><b>Die Liste lässt sich nicht laden.</b><br>In der Datei wuensche.js fehlt vermutlich ein Komma, eine Klammer oder ein Anführungszeichen.</div>';return}
+  var list=W.filter(function(i){return i&&i.titel}).sort(function(a,b){return (a.besorgt?1:0)-(b.besorgt?1:0)||(Number(b.herz)||1)-(Number(a.herz)||1)});
+  var done=0,open=0;
+  list.forEach(function(i){if(i.besorgt)done++;else if(typeof i.preis==='number')open+=i.preis});
+  var stats='<span><b>'+list.length+'</b>Wünsche</span><span><b>'+done+'</b>besorgt</span><span><b>'+eur(open)+'</b>noch offen</span>';
+  m.innerHTML='<div class="intro"><p>Das wünsche ich mir zu Weihnachten. Die Herzen zeigen, wie sehr.</p><div class="stats">'+stats+'</div></div><div class="grid">'+(list.map(card).join('')||'<div class="empty">Noch nichts auf der Liste.</div>')+'</div>';
+}
+
+root.addEventListener('error',function(e){
+  if(e.target&&e.target.tagName==='IMG'){var p=document.createElement('div');p.innerHTML=GIFT;e.target.replaceWith(p.firstChild)}
+},true);
+
+function snow(){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var c=document.createElement('canvas');c.className='snow';c.setAttribute('aria-hidden','true');
+  document.body.insertBefore(c,document.body.firstChild);
+  var g=c.getContext('2d'),Wd=0,H=0,fl=[],col='rgba(255,255,255,.8)',n=0;
+  function size(){Wd=c.width=innerWidth;H=c.height=innerHeight;var k=Math.min(90,Math.round(Wd/14));fl=[];for(var i=0;i<k;i++)fl.push({x:Math.random()*Wd,y:Math.random()*H,r:1+Math.random()*2.6,v:.3+Math.random()*.9,s:Math.random()*6.28})}
+  size();addEventListener('resize',size);
+  (function tick(){
+    if(!document.hidden){
+      if(n++%120===0)col=getComputedStyle(document.documentElement).getPropertyValue('--snow')||col;
+      g.clearRect(0,0,Wd,H);g.fillStyle=col;
+      for(var i=0;i<fl.length;i++){var f=fl[i];f.y+=f.v;f.s+=.01;f.x+=Math.sin(f.s)*.4;if(f.y>H+4){f.y=-4;f.x=Math.random()*Wd}g.beginPath();g.arc(f.x,f.y,f.r,0,6.283);g.fill()}
+    }
+    requestAnimationFrame(tick);
+  })();
+}
+shell();main();snow();
+})();
+</script>
+</body>
+</html>
