@@ -22,5 +22,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "Isoclear Whey Protein Isolate",
+    "preis": 88.06,
+    "stand": "20.11.2026",
+    "shop": "",
+    "link": "https://www.esn.com/products/esn-isoclear-whey-isolate?variant=47947650695483&mm_rf=mm_c4e7e84a136a847f5c42",
+    "bild": "https://www.esn.com/cdn/shop/files/IsoClear_2000g_Beutel_LemonIcedTea-vtsf9Rtu.jpg?v=1766394278&width=720",
+    "notiz": "",
+    "herz": 1,
+    "besorgt": false
   }
 ];
