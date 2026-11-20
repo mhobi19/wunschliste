@@ -33,5 +33,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 1,
     "besorgt": false
+  },
+  {
+    "titel": "Arrival T-Shirt",
+    "preis": 14,
+    "stand": "21.11.2026",
+    "shop": "",
+    "link": "https://de.gymshark.com/products/gymshark-arrival-t-shirt-ss-tops-blue-aw26",
+    "bild": "https://cdn.shopify.com/s/files/1/1693/6215/files/ArrivalT_ShirtGSHeavyBlueA2A1K_UCTN_0060_V1_3840x.jpg?v=1792567509",
+    "notiz": "gerne in blau und schwarz",
+    "herz": 2,
+    "besorgt": false
   }
 ];
