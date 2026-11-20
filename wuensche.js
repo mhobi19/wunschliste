@@ -44,5 +44,16 @@ window.WUENSCHE = [
     "notiz": "gerne in blau und schwarz",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "BMW 120 i M Sport | LED PDC Lenkradhzg",
+    "preis": 23.77,
+    "stand": "21.11.2026",
+    "shop": "",
+    "link": "https://www.autoscout24.de/angebote/bmw-1er-i-m-sport-led-pdc-lenkradhzg-benzin-schwarz-cat_ma13gr100037ge193va4087mt523tr2079-8062e79a-610a-40cf-87c9-6a135e55d863?sort=standard&desc=0&position=10&source_otp=t50&source=listpage_search-results&order_bucket=unknown&boost_level=t50&applied_boost_level=t50&relevance_adjustment=boost&boosting_product=mia",
+    "bild": "https://prod.pictures.autoscout24.net/listing-images/8062e79a-610a-40cf-87c9-6a135e55d863_1ea44e4e-a311-495c-9697-245d18bbd79f.jpg/720x540.webp",
+    "notiz": "",
+    "herz": 3,
+    "besorgt": false
   }
 ];
