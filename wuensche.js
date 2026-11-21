@@ -55,5 +55,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 3,
     "besorgt": false
+  },
+  {
+    "titel": "Straight Leg Pumper Pants",
+    "preis": 45.5,
+    "stand": "21.11.2026",
+    "shop": "",
+    "link": "https://de.gymshark.com/products/gymshark-straight-leg-pumper-pants-pants-black-aw25",
+    "bild": "https://cdn.shopify.com/s/files/1/1693/6215/files/images-StraightLegPumperPantsGSBlackA4B8B_BB2J_0546_V1_2dfa7ba3-48a5-43d5-8491-a28bcc26782d_3840x.jpg?v=1757337192",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
