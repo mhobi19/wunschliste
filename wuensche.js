@@ -66,5 +66,49 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "Antracita Varsity Sweatpants",
+    "preis": 108,
+    "stand": "23.11.2026",
+    "shop": "",
+    "link": "https://twojeys.com/products/antracita-varsity-sweatpants?variant=51992353571143",
+    "bild": "https://twojeys.com/cdn/shop/files/FT031_aca3fa71-a2db-409c-a186-0ba2061a9a8c.jpg?v=1756983961&width=3840",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
+  },
+  {
+    "titel": "Open image in full screen Icon Hoodie Anthracite Open image in full screen Icon Hoodie Anthracite – worn by model Open",
+    "preis": 117,
+    "stand": "23.11.2026",
+    "shop": "",
+    "link": "https://twojeys.com/products/icon-washed-anthracite-hoodie?variant=48420111483207",
+    "bild": "https://twojeys.com/cdn/shop/files/FT040_9f1ddda7-22c8-4d9b-8abe-e8c18d7c5f1d.jpg?v=1792486380&width=3840",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
+  },
+  {
+    "titel": "'CIÉL' RAGLAN LONGSLEEVE",
+    "preis": 52.77,
+    "stand": "23.11.2026",
+    "shop": "",
+    "link": "https://ffected.com/products/ciel-contrast-longsleeve-blue?variant=53164215533904",
+    "bild": "https://ffected.com/cdn/shop/files/CTRSSBL1.avif?v=1782489805&width=1280",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
+  },
+  {
+    "titel": "Gerard Pinstripe Trousers, Black",
+    "preis": 100,
+    "stand": "23.11.2026",
+    "shop": "",
+    "link": "https://eu.33-mm.com/de/products/gerard-pant-black-pinstripe?variant=48217607110868",
+    "bild": "https://eu.33-mm.com/cdn/shop/files/GERARD-BLACK-STRIPE-PACKSHOT.png?v=1787840695&width=3000",
+    "notiz": "",
+    "herz": 3,
+    "besorgt": false
   }
 ];
