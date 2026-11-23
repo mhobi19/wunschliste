@@ -110,5 +110,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 3,
     "besorgt": false
+  },
+  {
+    "titel": "Acryl-CD-Spiegel, 61 x 61 cm, Coole Musikdekoration, niedlicher Spiegel, runde CD, lustige Weihnachtsmusik, Raumdekorati",
+    "preis": 97.72,
+    "stand": "23.11.2026",
+    "shop": "",
+    "link": "https://www.amazon.de/-/en/Tellegloww-Acrylic-Decoration-Christmas-Girlfriend/dp/B0CZDSMH3R",
+    "bild": "https://m.media-amazon.com/images/I/71636DsRujL._AC_SX679_.jpg",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
