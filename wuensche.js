@@ -154,5 +154,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "Casio Herrenuhr",
+    "preis": 47.92,
+    "stand": "24.11.2026",
+    "shop": "",
+    "link": "https://www.christ.de/product/87950093/casio-herrenuhr-mtp-1302pd-2avef/index.html?utm_source=google&utm_medium=cpc&utm_campaign=DE_CHRIST_G_SHOPPING_CSS_PMAX_FM_High&gad_source=1&gad_campaignid=21233643523&gbraid=0AAAAADvH_0csCmIuoI3UVkpM1j_ew3ByT&gclid=Cj0KCQiAiJXYBhD_ARIsAAx2AHm486JkvsZgS3Da0_4RSx3tFYPx1wnMhFqBiOsA-zzOq_2AtLFiM-UaAiovEALw_wcB",
+    "bild": "https://assets.chrimg.com/image/christ/87950093/87950093/product_max/87950093.jpg",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
