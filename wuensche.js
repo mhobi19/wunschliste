@@ -143,5 +143,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "soundcore 2 by Anker Bluetooth Lautspreche(Schwarz)",
+    "preis": 23.99,
+    "stand": "24.11.2026",
+    "shop": "",
+    "link": "https://www.amazon.de/Anker-soundcore-Bluetooth-Lautspreche-Schwarz/dp/B01MTB55WH/ref=sr_1_18?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=32XB1JPY0LJYY&dib=eyJ2IjoiMSJ9.wUw9grYuOvyXB5nH5cR6n0Q_nHB5myNqssFn6bC62TqvpMsovZzbJdj7gcAubAnI7oEJ0NbnOhiv62QPwsQBSF6V2LSkNcswnnnphj8Dh7hjbGRqX_7hBCmqzjFTbzSkyLHHxN86qJyuH1TPUAzS8FTivWbIYSnpvvBwLMGTvGvtXNbJR6FlQA1kD9ztjwk_yw525HV6vA0Iz7LqFTfAjPi2n0SKRnlX8_doqVndVCE.t5u6VvQv4GIzySPlE37I_ieFrzsjxZmNemcATInYQos&dib_tag=se&keywords=musik%2Bbox%2Bjbl&psr=EY17&qid=1795525319&s=black-friday&sprefix=musik%2Bbox%2Bjbl%2Cblack-friday%2C134&sr=1-18&th=1",
+    "bild": "https://m.media-amazon.com/images/I/71Ot0b2h80L._AC_SL1500_.jpg",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
