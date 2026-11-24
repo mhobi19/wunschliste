@@ -132,5 +132,16 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "BASIS-T-SHIRT MIT KONTRAST-RIP",
+    "preis": 17.95,
+    "stand": "24.11.2026",
+    "shop": "",
+    "link": "https://www.zara.com/de/de/basic-t-shirt-mit-rippstrick-kontrast-p00761414.html?v1=545425916",
+    "bild": "https://static.zara.net/assets/public/73bb/fd01/da7342978907/7ce1981dcecf/00761414251-p/00761414251-p.jpg?ts=1785853850898&w=1500",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
