@@ -123,17 +123,6 @@ window.WUENSCHE = [
     "besorgt": false
   },
   {
-    "titel": "\"gallery v2\" leather Belt black",
-    "preis": 94,
-    "stand": "24.11.2026",
-    "shop": "",
-    "link": "https://derschutze.com/collections/new/products/gallery-v2-leather-belt-black",
-    "bild": "https://derschutze.com/cdn/shop/files/2026-11-07-16-3-1.webp?v=1794412792&width=1280",
-    "notiz": "",
-    "herz": 2,
-    "besorgt": false
-  },
-  {
     "titel": "BASIS-T-SHIRT MIT KONTRAST-RIP",
     "preis": 17.95,
     "stand": "24.11.2026",
