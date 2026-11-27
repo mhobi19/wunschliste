@@ -154,5 +154,27 @@ window.WUENSCHE = [
     "notiz": "",
     "herz": 2,
     "besorgt": false
+  },
+  {
+    "titel": "OVERSIZED-T-SHIRT MIT LANGEN ÄRMELN",
+    "preis": 22.95,
+    "stand": "27.11.2026",
+    "shop": "",
+    "link": "https://www.zara.com/de/de/oversized-t-shirt-mit-langen-armeln-p00761333.html?v1=562910622&v2=2432015",
+    "bild": "https://static.zara.net/assets/public/da2f/33db/d57943729cea/1ab17696b28d/00761333250-p/00761333250-p.jpg?ts=1787643753111&w=1500",
+    "notiz": "",
+    "herz": 3,
+    "besorgt": false
+  },
+  {
+    "titel": "OVERSIZED-LANGARMSHIRT MIT STREIFEN",
+    "preis": 22.95,
+    "stand": "27.11.2026",
+    "shop": "",
+    "link": "https://www.zara.com/de/de/oversized-t-shirt-mit-langen-armeln-p00761333.html?v1=562910619&v2=2432004",
+    "bild": "https://static.zara.net/assets/public/61aa/f2f6/f62d4d9a84ae/704bea45ea05/00761333044-p/00761333044-p.jpg?ts=1787644903025&w=2156",
+    "notiz": "",
+    "herz": 2,
+    "besorgt": false
   }
 ];
